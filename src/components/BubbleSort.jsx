@@ -36,9 +36,11 @@ export default function BubbleSort() {
   }, []);
 
   const generateArray = () => {
-    const newArray = Array.from({ length: 15 }, () =>
-      Math.floor(Math.random() * 50) + 10
-    );
+    // Generate array of objects with stable IDs for animation
+    const newArray = Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      value: Math.floor(Math.random() * 50) + 10,
+    }));
     setArray(newArray);
     setSorted([]);
     setComparing([]);
@@ -58,7 +60,7 @@ export default function BubbleSort() {
         setComparing([j, j + 1]);
         await sleep(300);
 
-        if (arr[j] > arr[j + 1]) {
+        if (arr[j].value > arr[j + 1].value) {
           // Highlight swapping
           setSwapping([j, j + 1]);
           await sleep(200);
@@ -94,8 +96,8 @@ export default function BubbleSort() {
           </p>
         </div>
 
-        <div className="flex items-end justify-center gap-2 h-96 w-full bg-white rounded-xl p-8 shadow-xl border border-gray-100">
-          {array.map((value, index) => {
+        <div className="flex items-end justify-center gap-2 h-96 w-full bg-white rounded-xl p-8 shadow-xl border border-gray-100 relative">
+          {array.map((item, index) => {
             let color = "bg-blue-500";
             if (sorted.includes(index)) color = "bg-green-500";
             else if (swapping.includes(index)) color = "bg-red-500";
@@ -103,13 +105,13 @@ export default function BubbleSort() {
 
             return (
               <motion.div
-                key={index}
+                key={item.id} // Stable key for Framer Motion reordering
                 layout
                 transition={SPRING}
                 className={`w-full max-w-[40px] rounded-t-md ${color} shadow-sm`}
-                style={{ height: `${value * 5}px` }}
+                style={{ height: `${item.value * 5}px` }}
               >
-                <span className="hidden">{value}</span>
+                <span className="hidden">{item.value}</span>
               </motion.div>
             );
           })}
